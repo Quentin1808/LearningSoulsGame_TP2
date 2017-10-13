@@ -21,7 +21,9 @@ public class Dice {
     }
 
     public int roll(){
-        return random.nextInt(faces-1);
+        int v;
+        v = random.nextInt(faces);
+        return v;
     }
 
 

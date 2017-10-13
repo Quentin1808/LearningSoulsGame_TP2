@@ -10,6 +10,7 @@ public class Character {
     private int stamina;
     private int maxStamina;
     private Dice dice;
+    private Weapon weapon;
 
     protected Character() {
         dice = new Dice(101);
@@ -60,6 +61,14 @@ public class Character {
         this.name = name;
     }
 
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
     public boolean isAlive() {
         return (this.getLife()>0);
     }
@@ -68,13 +77,14 @@ public class Character {
         System.out.println(toString());
     }
 
-    public int attackWith(Weapon weapon){
+    private int attackWith(Weapon weapon){
 
         int dmg;
         int precision;
         int degats = 0;
 
         if (weapon.isBroken() || this.getStamina() <= 0){
+            weapon.use();
             return 0;
         }else {
             precision = this.dice.roll();
@@ -85,13 +95,13 @@ public class Character {
                 if (precision == 100){
                     dmg = weapon.getMaxDamage();
                 }else {
-                    dmg = (precision / 100) * (weapon.getMaxDamage() - weapon.getMinDamage());
-                    dmg = Math.round(dmg);
+                    dmg = (precision  * (weapon.getMaxDamage() - weapon.getMinDamage()) / 100) + weapon.getMinDamage();
+
                     degats = (dmg);
                 }
             }
             if (this.getStamina() < weapon.getStamCost()){
-                degats =  (this.getStamina() / weapon.getStamCost()) * degats;
+                degats = degats * this.getStamina() / weapon.getStamCost();
                 this.setStamina(0);
             }else {
                 int newS;
@@ -99,8 +109,21 @@ public class Character {
                 this.setStamina(newS);
             }
         }
-
+        weapon.use();
         return degats;
+
+    }
+
+    public int attack(){
+       return attackWith(this.weapon);
+    }
+
+    public int getHitWith(int value){
+
+        int dmg = (this.getLife()-value < 0)? this.getLife() : value;
+        this.setLife(this.getLife() - dmg);
+        return dmg;
+
     }
 
     @Override
