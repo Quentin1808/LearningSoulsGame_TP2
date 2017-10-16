@@ -1,27 +1,75 @@
 package lsg;
 
-import lsg.characters.Hero;
-import lsg.characters.Monster;
+import lsg.characters.*;
+import java.lang.Character;
+import lsg.weapons.Weapon;
+import lsg.weapons.Claw;
+import lsg.weapons.ShotGun;
 import lsg.weapons.Sword;
+
+
 import java.util.Scanner;
 
 public class LearningSoulsGame {
 
-    public static void refresh(Hero h, Monster m){
-        h.printStats();
-        m.printStats();
+    //On déclare 1 Hero et 1 Monstre ainsi qu'un Scanner
+    private lsg.characters.Character hero1 = new Hero();
+    private lsg.characters.Character monster1 = new Monster();
+    private Scanner scanner = new Scanner(System.in);
+
+
+    //Méthode refresh qui permet d'afficher les valeurs de chaque combattant
+    private void refresh(){
+
+        hero1.printStats();
+        monster1.printStats();
+    }
+
+    //Méthode qui permet d'attribuer les armes aux deux combattants
+    private void init() {
+
+        hero1.setWeapon(new Sword());
+        monster1.setWeapon(new Claw());
+    }
+
+    //Méthode dans laquelle les combattants vont être intervertis tant qu'un des deux et vivant
+    private void fight1v1() {
+
+        lsg.characters.Character p1 = hero1;
+        lsg.characters.Character p2 = monster1;
+
+        int att;
+        int dmg;
+
+        lsg.characters.Character tmp;
+
+        while(hero1.isAlive() && monster1.isAlive()) {
+
+            refresh();
+            System.out.print("\nPress enter to continue ... ");
+            scanner.nextLine();
+
+            att = p1.attack();
+            dmg = p2.getHitWith(att);
+            System.out.println("\n" + p1.getName() + " attacks " + p2.getName() + " with " + p1.getWeapon().getName() + " (ATTACK:" + att + " | DMG : " + dmg + ")");
+
+            tmp = p2;
+            p2 = p1;
+            p1 = tmp;
+
+        }
+        System.out.println("\n--- " + p2.getName() + " WINS !!! ---");
+    }
+
+    private void play_v1() {
+        init();
+        fight1v1();
     }
 
     public static void main(String[] args) {
 
-       Hero Hero1 = new Hero();
-       Monster Monster1 = new Monster();
-
-       refresh(Hero1, Monster1);
-
-       Scanner scanner = new Scanner(System.in);
-
-
+        LearningSoulsGame lsg = new LearningSoulsGame();
+        lsg.play_v1();
 
 
        /*Monster M1 = new Monster("STUDENTATORT");
